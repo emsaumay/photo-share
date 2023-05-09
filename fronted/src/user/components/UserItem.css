@@ -1,0 +1,66 @@
+.user-image{
+    min-width: 150px; 
+    max-width: 150px; 
+  height: 150px; 
+  object-fit: cover; /* Scale the image to fill the container while preserving aspect ratio */
+  border-radius: 50%; 
+  vertical-align: bottom;
+
+}
+
+.user-info{
+    display: flex;
+    margin-left: 50px;
+    margin-top: 60px;
+    width:fit-content;
+    background:rgb(218, 244, 255);
+    padding: 10px;
+    box-shadow: 10px 10px 20px rgba(27, 27, 27, 0.637);
+}
+
+.user-info:hover{
+    background-color: rgb(106, 188, 255);
+}
+
+.user-image-container{
+    padding-right: 30px;
+}
+
+
+.user-text{
+    font-size: 20px;
+}
+
+.user-text-first{
+    display: flex;
+}
+
+.user-name{
+    width: 100px;
+    padding-right: 300px;
+    margin-bottom: 5px;
+
+}
+
+.user-location{
+    min-width: 150px;
+    margin: auto;
+    margin-bottom: 5px;
+
+}
+
+.user-occupation{
+    margin: 0;
+    color: rgb(121, 121, 121);
+}
+
+.user-places{
+    margin: 0;
+    margin-top: 10px;
+}
+
+.user-link{
+    display: block;
+    text-decoration: none;
+    width: 0%;
+}
