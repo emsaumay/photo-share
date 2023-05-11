@@ -10,7 +10,7 @@ function NavMain(props) {
     return(
         <MainHeader>
             <nav>
-                <div class="logo">
+                <div className="logo">
                     <a href="/"><img src={Logo} alt="Logo" className="logo-img"/></a>
                     <h1>NoName</h1>
                 </div>

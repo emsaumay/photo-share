@@ -1,5 +1,6 @@
 import React, { useState } from "react"; 
 import Button from "../../shared/Components/FormElements/Button";
+import Map from "../../shared/Components/UIElements/Map";
 import Modal from "../../shared/Components/UIElements/Modal";
 import "./PlaceItem.css"
 
@@ -20,10 +21,12 @@ const PlaceItem = props => {
             footerClass=""
             footer={<Button onClick={closeMapHandler}>Close</Button>}
         >
-            <div className="map-container">MAP!!</div>
+            <div className="map-container">
+                <Map location={props.name} zoom={8}/>
+            </div>
         </Modal>
         <li>
-            <div class="card">
+            <div className="card">
                 <img src={props.image} alt={props.name}/>
                 <div className="card-content">
                     <h2 className="card-title">{props.name}</h2>

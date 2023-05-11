@@ -8,6 +8,7 @@ import NavMain from './shared/Components/NavElements/MainNavigation';
 import Clock from './shared/Components/Clock/Clock';
 import UserPlaces from './places/pages/UserPlaces';
 import UserPlace from './places/pages/UserPlace';
+import CityData from './places/pages/CityData';
 
 
 function App() {
@@ -19,6 +20,7 @@ function App() {
         <Route path="/places/new" element={<NewPlace/>} exact/>
         <Route path="/:userId/places" element={<UserPlaces/>} exact/>
         <Route path="/u1/place" element={<UserPlace/>} exact/>
+        <Route path="/city" element={<CityData/>} exact/>
         <Route path='/*' element={<Navigate to="/"/>}/>
       </Routes>
       <Clock/>
