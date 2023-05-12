@@ -1,4 +1,4 @@
-import React, { useReducer } from 'react'
+import React, { useReducer, useEffect } from 'react'
 import { validate } from '../../util/validators'
 import "./Input.css"
 
@@ -30,6 +30,13 @@ const Input = props => {
             validators: props.validators
         })
     }   
+
+    const { onInput, id } = props
+    const { value, isValid } = inputState
+
+    useEffect(() => {
+        onInput(id, value, isValid)
+    },[onInput, id, value, isValid])
 
     const touchHandler = () => {
         dispatch({
