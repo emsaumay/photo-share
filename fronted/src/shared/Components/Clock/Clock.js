@@ -13,9 +13,7 @@ function Clock() {
     // console.log(timerID)
     return () => clearInterval(timerID);
   });
-  useEffect(() => {
-    
-  }, [hour])
+  
 
 
   function tick() {
