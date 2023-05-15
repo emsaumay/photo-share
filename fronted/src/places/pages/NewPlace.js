@@ -2,7 +2,7 @@ import React, {useCallback, useReducer} from "react";
 import Button from "../../shared/Components/FormElements/Button";
 import Input from "../../shared/Components/FormElements/Input";
 import { VALIDATOR_REQUIRE } from "../../shared/util/validators";
-import "./NewPlace.css"
+import "./PlaceForm.css"
 
 const formReducer = (state, action) => {
     switch(action.type){
@@ -42,6 +42,10 @@ function NewPlace(props){
             Description:{
                 value: '',
                 isValid: false
+            },
+            Address:{
+                value: '',
+                isValid: false
             }
         },
         isValid: false
@@ -56,9 +60,13 @@ function NewPlace(props){
         })
     }, [])
 
+    const submitHandler = event => {
+        event.preventDefault()
+        console.log(formState.inputs)
+    }
 
     // console.log(formState)
-    return(<form className="place-form">
+    return(<form className="place-form" onSubmit={submitHandler}>
         <Input 
             id="Title"
             element="input" 
@@ -69,7 +77,16 @@ function NewPlace(props){
             onInput={InputHandler}
         />
         <Input 
-            id="Description"
+            id="Location"
+            element="input" 
+            type="text"
+            label="Location" 
+            errorText="Please enter a valid address" 
+            validators={[VALIDATOR_REQUIRE()]}
+            onInput={InputHandler}
+        />
+        <Input 
+            id="Caption"
             element="textarea" 
             label="Caption" 
             errorText="Please enter a valid caption" 

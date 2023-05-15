@@ -8,7 +8,7 @@ const UserPlaces = props => {
     const id = parseInt(userId[1])
     return(
         <div>
-            <PlaceList user={id-1}/>
+            <PlaceList user={id-1} showEdit={false}/>
         </div>
     )
 }

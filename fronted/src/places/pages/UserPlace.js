@@ -3,7 +3,7 @@ import PlaceList from "../components/PlaceList";
 
 const UserPlace = () => {
     return(
-        <PlaceList user={0}/>
+        <PlaceList user={0} showEdit={true}/>
     )
 }
 

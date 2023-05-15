@@ -12,9 +12,11 @@ const PlaceList = props => {
             {UserData[props.user].places.map(place => {
                 return (<PlaceItem
                     key={place.id}
+                    id={place.id}
                     name={place.name}
                     image="https://cdn.mos.cms.futurecdn.net/yCPyoZDQBBcXikqxkeW2jJ-1200-80.jpg"
                     caption={place.caption}
+                    showEdit = {props.showEdit}
                 />
             )})}
         </ul>

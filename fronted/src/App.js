@@ -10,6 +10,7 @@ import UserPlaces from './places/pages/UserPlaces';
 import UserPlace from './places/pages/UserPlace';
 import Slider from './Test/Task1/Slider';
 import Main from './Test/Task2/Main';
+import UpdatePlace from './places/pages/UpdatePlace';
 
 
 function App() {
@@ -19,6 +20,7 @@ function App() {
       <Routes>
         <Route path="/" element={<Users/>} exact/>
         <Route path="/places/new" element={<NewPlace/>} exact/>
+        <Route path="/:userId/place/edit/:placeId" element={<UpdatePlace/>} exact/>
         <Route path="/:userId/places" element={<UserPlaces/>} exact/>
         <Route path="/u1/place" element={<UserPlace/>} exact/>
         <Route path="/test/task1" element={<Slider/>} exact/>
