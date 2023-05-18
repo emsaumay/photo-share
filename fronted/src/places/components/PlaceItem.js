@@ -6,9 +6,12 @@ import "./PlaceItem.css"
 
 const PlaceItem = props => {
     const [showMap, setShowMap] =useState(false);
+    const [deleteMessage, setDeleteMessage] = useState(false)
+
+    const opendeleteMessageHandler = () => setDeleteMessage(true)
+    const closedeleteMessageHandler = () => setDeleteMessage(false)
 
     const openMapHandler = () => setShowMap(true)
-
     const closeMapHandler = () => setShowMap(false)
 
     return(
@@ -25,6 +28,20 @@ const PlaceItem = props => {
                 <Map location={props.name} zoom={8}/>
             </div>
         </Modal>
+        <Modal 
+            show={deleteMessage}
+            onCancel={closedeleteMessageHandler}
+            header="Confirm?" 
+            footer={<div>
+                    <Button danger>Yes</Button>
+                    <Button onClick={closedeleteMessageHandler} inverse>Cancel</Button>
+                </div>
+            }
+        >
+            <p>
+                Do you really want to delete this post? Please note that this action is irreversible.
+            </p>
+        </Modal>
         <li>
             <div className="card">
                 <img src={props.image} alt={props.name}/>
@@ -35,7 +52,7 @@ const PlaceItem = props => {
                     {props.showEdit &&<div className="card-buttons">
                         <Button inverse onClick={openMapHandler}>View on Map</Button>
                         <Button to={`edit/${props.id}`}>Edit</Button>
-                        <Button inverse>Delete</Button>
+                        <Button inverse onClick={opendeleteMessageHandler}>Delete</Button>
                     </div>}
                 </div>
             </div>
