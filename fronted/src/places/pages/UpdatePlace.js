@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
 
 import {UserData} from"../../shared/UserData"
@@ -11,26 +11,52 @@ import { useForm } from '../../shared/hooks/form-hook'
 import "./PlaceForm.css"
 
 const UpdatePlace = () => {
+  const [loading, setLoading] = useState(true)
+
     const userId = useParams().userId
     const placeId = useParams().placeId
     const place = UserData[parseInt(userId[1]) - 1].places[placeId]
 
-    const [formState, InputHandler] = useForm({
+    const [formState, InputHandler, setFormValue] = useForm({
       Caption:{
-          value: place.caption,
-          isValid: true
+          value: "",
+          isValid: false
       },
       Location:{
-          value: place.name,
-          isValid: true
+          value: "",
+          isValid: false
       }
     }, false)
+
+    useEffect(() => {
+      setFormValue({
+        Caption:{
+          value: place.caption,
+          isValid: true
+        },
+        Location:{
+          value: place.name,
+          isValid: true
+        }
+      }, true)
+      setLoading(false)
+    }, [setFormValue, place])
+
+    
 
     const submitHandler = event => {
       event.preventDefault()
       console.log(formState.inputs)
   }
-  
+
+  if(loading){
+    return(
+      <div className='center'>
+        Loading
+      </div>
+    )
+  }
+
     // console.log(userId)
   return (
     <form className="place-form" onSubmit={submitHandler}>
