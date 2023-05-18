@@ -6,26 +6,44 @@ import Input from '../../shared/Components/FormElements/Input'
 import Button from '../../shared/Components/FormElements/Button'
 import { VALIDATOR_REQUIRE } from '../../shared/util/validators'
 
+import { useForm } from '../../shared/hooks/form-hook'
+
 import "./PlaceForm.css"
 
 const UpdatePlace = () => {
     const userId = useParams().userId
     const placeId = useParams().placeId
-    // console.log(userId)
     const place = UserData[parseInt(userId[1]) - 1].places[placeId]
-    console.log(place)
+
+    const [formState, InputHandler] = useForm({
+      Caption:{
+          value: place.caption,
+          isValid: true
+      },
+      Location:{
+          value: place.name,
+          isValid: true
+      }
+    }, false)
+
+    const submitHandler = event => {
+      event.preventDefault()
+      console.log(formState.inputs)
+  }
+  
+    // console.log(userId)
   return (
-    <form className="place-form">
+    <form className="place-form" onSubmit={submitHandler}>
         <Input
-            id="Title"
+            id="Location"
             element="input"
             type="text"
-            label="Title"
+            label="Location"
             validators={[VALIDATOR_REQUIRE()]}
-            errorText="Please provide a correct title."
-            onInput={()=>{}}
-            value={place.name}
-            valid={true}
+            errorText="Please provide a correct location."
+            onInput={InputHandler}
+            value={formState.inputs.Location.value}
+            valid={formState.inputs.Location.isValid}
         />
         <Input
             id="Caption"
@@ -33,11 +51,11 @@ const UpdatePlace = () => {
             label="Caption"
             validators={[VALIDATOR_REQUIRE()]}
             errorText="Please provide a correct caption."
-            onInput={()=>{}}
-            value={place.caption}
-            valid={true}
+            onInput={InputHandler}
+            value={formState.inputs.Caption.value}
+            valid={formState.inputs.Caption.isValid}
         />
-        <Button type="submit" disabled={true}>Update Place</Button>
+        <Button type="submit" disabled={!formState.isValid}>Update Place</Button>
     </form>
   )
 }

@@ -11,6 +11,7 @@ import UserPlace from './places/pages/UserPlace';
 import Slider from './Test/Task1/Slider';
 import Main from './Test/Task2/Main';
 import UpdatePlace from './places/pages/UpdatePlace';
+import Carousel from './Test/Carousel/Carousel';
 
 
 function App() {
@@ -23,8 +24,10 @@ function App() {
         <Route path="/:userId/place/edit/:placeId" element={<UpdatePlace/>} exact/>
         <Route path="/:userId/places" element={<UserPlaces/>} exact/>
         <Route path="/u1/place" element={<UserPlace/>} exact/>
+        {/* Tasks-- */}
         <Route path="/test/task1" element={<Slider/>} exact/>
         <Route path="/test/task2/*" element={<Main/>} exact/>
+        <Route path="/test/Carousel/" element={<Carousel/>} exact/>
         <Route path='/*' element={<Navigate to="/"/>}/>
       </Routes>
       <Clock/>

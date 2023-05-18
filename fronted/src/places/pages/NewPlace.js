@@ -1,64 +1,21 @@
-import React, {useCallback, useReducer} from "react";
+import React from "react";
 import Button from "../../shared/Components/FormElements/Button";
 import Input from "../../shared/Components/FormElements/Input";
 import { VALIDATOR_REQUIRE } from "../../shared/util/validators";
 import "./PlaceForm.css"
-
-const formReducer = (state, action) => {
-    switch(action.type){
-        case "CHANGE_INPUT":
-            let formValid = true
-            for(const inputId in state.inputs){
-                if(inputId === action.id){
-                    formValid = formValid && action.isValid
-                }
-                else{
-                    formValid = formValid && state.inputs[inputId].isValid
-                }
-            }
-            return{
-                ...state,
-                inputs: {
-                    ...state.inputs,
-                    [action.id]: {
-                        value: action.value,
-                        isValid: action.isValid
-                    }
-                },
-                isValid: formValid
-            }
-        default:
-            return state
-    }
-}
+import { useForm } from "../../shared/hooks/form-hook";
 
 function NewPlace(props){
-    const [formState, dispatch] = useReducer(formReducer, {
-        inputs: {
-            Title:{
-                value: '',
-                isValid: false
-            },
-            Description:{
-                value: '',
-                isValid: false
-            },
-            Address:{
-                value: '',
-                isValid: false
-            }
+    const [formState, InputHandler] = useForm({
+        Caption:{
+            value: '',
+            isValid: false
         },
-        isValid: false
-    })
-
-    const InputHandler = useCallback((id, value, isValid) => {
-        dispatch({
-            type: "CHANGE_INPUT",
-            value: value,
-            id: id,
-            isValid: isValid
-        })
-    }, [])
+        Location:{
+            value: '',
+            isValid: false
+        }
+    }, false)
 
     const submitHandler = event => {
         event.preventDefault()
@@ -67,15 +24,6 @@ function NewPlace(props){
 
     // console.log(formState)
     return(<form className="place-form" onSubmit={submitHandler}>
-        <Input 
-            id="Title"
-            element="input" 
-            type="text"
-            label="Title" 
-            errorText="Please enter a valid title" 
-            validators={[VALIDATOR_REQUIRE()]}
-            onInput={InputHandler}
-        />
         <Input 
             id="Location"
             element="input" 
