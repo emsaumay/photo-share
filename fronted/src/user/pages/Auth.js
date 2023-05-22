@@ -1,4 +1,4 @@
-import React, {useState} from 'react'
+import React, {useState, useContext} from 'react'
 
 import Input from '../../shared/Components/FormElements/Input'
 import Button from '../../shared/Components/FormElements/Button'
@@ -7,8 +7,10 @@ import { VALIDATOR_EMAIL, VALIDATOR_MINLENGTH, VALIDATOR_REQUIRE } from '../../s
 import { useForm } from '../../shared/hooks/form-hook'
 
 import "./Auth.css"
+import { AuthContext } from '../../shared/context/auth-context'
 
 const Auth = () => {
+    const Auth = useContext(AuthContext)
     const [isLoginMode, setIsLoginMode] = useState(true)
 
     const [formState, InputHandler, setFormValue] = useForm({
@@ -43,12 +45,13 @@ const Auth = () => {
 
     const submitHandler = event => {
         event.preventDefault()
+        Auth.login()
         console.log(formState.inputs)
     }
 
   return (
     <div className='place-form authentication'>
-    <form   onSubmit={submitHandler}>
+    <form onSubmit={submitHandler}>
         {!isLoginMode && 
             <Input
             id="name"

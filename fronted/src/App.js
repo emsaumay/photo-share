@@ -1,39 +1,65 @@
-import React from 'react';
+import React, {useCallback, useState} from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate} from 'react-router-dom';
 import Users from './user/pages/Users';
 import NewPlace from './places/pages/NewPlace';
 import './App.css';
+import { AuthContext } from './shared/context/auth-context';
 // import MainHeader from './shared/Components/MainHeader';
 import NavMain from './shared/Components/NavElements/MainNavigation';
 import Clock from './shared/Components/Clock/Clock';
 import UserPlaces from './places/pages/UserPlaces';
 import UserPlace from './places/pages/UserPlace';
-import Slider from './Test/Task1/Slider';
-import Main from './Test/Task2/Main';
 import UpdatePlace from './places/pages/UpdatePlace';
-import Carousel from './Test/Carousel/Carousel';
 import Auth from './user/pages/Auth';
 
 
 function App() {
-  return (
-    <Router>
-      <NavMain/>
-      <Routes>
+  const [isLoggedin, setIsLoggedin] = useState(false)
+   
+  const Login = useCallback(() => {
+    setIsLoggedin(true)
+  }, [])
+
+  
+  const Logout = useCallback(() => {
+    setIsLoggedin(false)
+  }, [])
+
+  let routes;
+
+  if(isLoggedin){
+    routes= (
+      <>
         <Route path="/" element={<Users/>} exact/>
         <Route path="/places/new" element={<NewPlace/>} exact/>
         <Route path="/:userId/place/edit/:placeId" element={<UpdatePlace/>} exact/>
         <Route path="/:userId/places" element={<UserPlaces/>} exact/>
         <Route path="/u1/place" element={<UserPlace/>} exact/>
-        <Route path="/auth" element={<Auth/>} exact/>
-        {/* Tasks-- */}
-        <Route path="/test/task1" element={<Slider/>} exact/>
-        <Route path="/test/task2/*" element={<Main/>} exact/>
-        <Route path="/test/Carousel/" element={<Carousel/>} exact/>
         <Route path='/*' element={<Navigate to="/"/>}/>
-      </Routes>
-      <Clock/>
-    </Router>
+      </>
+    );
+  }
+  else{
+    routes = (
+      <>
+        <Route path="/" element={<Users/>} exact/>
+        <Route path="/:userId/places" element={<UserPlaces/>} exact/>
+        <Route path="/auth" element={<Auth/>} exact/>
+        <Route path='/*' element={<Navigate to="/auth"/>}/>
+      </>
+    )
+  }
+
+  return (
+    <AuthContext.Provider value={{isLoggedin: isLoggedin, login: Login, logout: Logout}}>
+      <Router>
+        <NavMain/>
+        <Routes>
+          {routes}
+        </Routes>
+        <Clock/>
+      </Router>
+    </AuthContext.Provider>
   );
 }
 
