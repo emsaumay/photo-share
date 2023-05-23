@@ -9,6 +9,6 @@ app.get("/", (req,res) => {
     res.send("Hello!")
 })
 
-app.use(places)
+app.use("/api/places",places)
 
 app.listen(5000)
