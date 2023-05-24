@@ -36,6 +36,37 @@ const createPlace = (req,res,next) => {
     res.status(201).json({place: NewPlace})
 }
 
+const updatePlace = (req, res, next) => {
+    const id = parseInt(req.params.pid)
+    const {name, image, caption} = req.body
+
+    const oldPlaceIndex = UserData[0].places.findIndex(x => x.id == id)
+
+    const updatedPlace = {
+        ...UserData[0].places[oldPlaceIndex],
+        id,
+        name,
+        image,
+        caption
+    }
+    UserData[0].places[oldPlaceIndex] = updatedPlace
+
+    res.status(201).json({place: updatedPlace})
+}
+
+const deletePlace = (req, res, next) => {
+    const id = req.params.pid
+
+    const PlaceIndex = UserData[0].places.findIndex(x => x.id == id)
+    const newArr = UserData[0].places.filter(x => x.id != id)
+    console.log(newArr)
+    UserData[0].places = newArr
+
+    res.status(201).json({"message": "Removed"})
+}
+
 exports.getUserPlacesbyId = getUserPlacesbyId
 exports.getPlacebyId = getPlacebyId
 exports.createPlace = createPlace
+exports.updatePlace = updatePlace
+exports.deletePlace = deletePlace
