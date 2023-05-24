@@ -13,7 +13,9 @@ const UserData = [
       { id: 2,name: 'San Francisco', image: '', caption: 'A hilly city known for the Golden Gate Bridge' },
       { id: 3,name: 'Las Vegas', image: '', caption: 'A city known for its casinos and entertainment' },
       { id: 4,name: 'Seattle', image: '', caption: 'A city known for its coffee and rainy weather' }
-    ]
+    ],
+    email: "alice@example.com",
+    password: "alice123"
   },
   {
     id: 2,
@@ -26,7 +28,9 @@ const UserData = [
     places: [
       { id: 0, name: 'Seattle', image: '', caption: 'A city known for its coffee and rainy weather' },
       { id: 1, name: 'Portland', image: '', caption: 'A city known for its food and beer' }
-    ]
+    ],
+    email: "bob@example.com",
+    password: "bob123"
   },
   {
     id: 3,
@@ -44,7 +48,9 @@ const UserData = [
       { id: 4,name: 'Amsterdam', image: '', caption: 'A city of canals, bikes, and museums' },
       { id: 5,name: 'Prague', image: '', caption: 'A city of castles, bridges, and beer' },
       { id: 6,name: 'Vienna', image: '', caption: 'A city of classical music, coffeehouses, and palaces' }
-    ]
+    ],
+    email: "charlie@example.com",
+    password: "charlie123"
   }]
 
 module.exports = UserData

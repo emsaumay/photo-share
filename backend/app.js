@@ -2,6 +2,7 @@ const express = require("express")
 const bodyParser = require("body-parser")
 
 const places = require("./routes/places-routes")
+const users = require("./routes/users-routes")
 
 const app = express();
 
@@ -12,6 +13,7 @@ app.get("/", (req,res) => {
 })
 
 app.use("/api/places",places)
+app.use("/api/users",users)
 
 app.use((error, req,res,next) => {
     if (res.headerSent) {
