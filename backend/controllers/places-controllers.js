@@ -1,5 +1,6 @@
 const UserData = require("../DUMMY/UserData")
 const HttpError = require("../models/httpError")
+const {validationResult} = require("express-validator")
 const { v4: uuidv4 } = require('uuid');
 
 const getPlacebyId = (req, res, next) => {
@@ -23,6 +24,12 @@ const getUserPlacesbyId = (req, res, next) => {
 }
 
 const createPlace = (req,res,next) => {
+    const errors = validationResult(req);
+
+    if(!errors.isEmpty()){
+        return next(new HttpError("Input not correct. Checkk again", 422))
+    }
+
     const {name, image, caption} = req.body
     const NewPlace = {
         id: uuidv4(),
@@ -37,6 +44,12 @@ const createPlace = (req,res,next) => {
 }
 
 const updatePlace = (req, res, next) => {
+    const errors = validationResult(req);
+
+    if(!errors.isEmpty()){
+        return next(new HttpError("Input not correct. Checkk again", 422))
+    }
+
     const id = parseInt(req.params.pid)
     const {name, image, caption} = req.body
 
@@ -58,8 +71,14 @@ const deletePlace = (req, res, next) => {
     const id = req.params.pid
 
     const PlaceIndex = UserData[0].places.findIndex(x => x.id == id)
+
+    if (PlaceIndex === -1) {
+        return next(new HttpError("Place requested to delete doesn't exist.", 422))
+    }
+
+    console.log(PlaceIndex)
     const newArr = UserData[0].places.filter(x => x.id != id)
-    console.log(newArr)
+    // console.log(newArr)
     UserData[0].places = newArr
 
     res.status(201).json({"message": "Removed"})

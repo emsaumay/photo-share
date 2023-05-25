@@ -1,5 +1,7 @@
 const UserData = require("../DUMMY/UserData")
 const HttpError = require("../models/httpError")
+const {validationResult} = require("express-validator")
+
 const { v4: uuidv4 } = require('uuid');
 
 const getUsers = (req, res, next) => {
@@ -12,7 +14,17 @@ const getUsers = (req, res, next) => {
 }
 
 const signUp = (req, res, next) => {
+    const errors = validationResult(req);
+
+    if(!errors.isEmpty()){
+        return next(new HttpError("Input not correct. Checkk again", 422))
+    }
+
     const { name, password, email } = req.body
+
+    if (UserData.find(x => x.email === email)) {
+        return next(new HttpError("Email already exists", 422))
+    }
 
     const newUser = { id: uuidv4(), name, password, email }
 
@@ -22,6 +34,12 @@ const signUp = (req, res, next) => {
 }
 
 const login = (req, res, next) => {
+    const errors = validationResult(req);
+
+    if(!errors.isEmpty()){
+        return next(new HttpError("Input not correct. Checkk again", 422))
+    }
+    
     const { password, email } = req.body
 
     const IdentifiedUser = UserData.find(x => x.email === email)
