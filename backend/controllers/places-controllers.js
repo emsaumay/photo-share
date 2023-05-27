@@ -93,21 +93,33 @@ const updatePlace = (req, res, next) => {
     res.status(201).json({place: updatedPlace})
 }
 
-const deletePlace = (req, res, next) => {
-    const id = req.params.pid
+const deletePlace = async (req, res, next) => {
+    const placeId = req.params.pid
+    // const PlaceIndex = UserData[0].places.findIndex(x => x.id == id)
 
-    const PlaceIndex = UserData[0].places.findIndex(x => x.id == id)
-
-    if (PlaceIndex === -1) {
-        return next(new HttpError("Place requested to delete doesn't exist.", 422))
+    // if (PlaceIndex === -1) {
+    //     return next(new HttpError("Place requested to delete doesn't exist.", 422))
+    // }
+    let place
+    try{
+        place = await Place.deleteOne({_id : placeId})
     }
-
-    console.log(PlaceIndex)
-    const newArr = UserData[0].places.filter(x => x.id != id)
+    catch{
+        return next(new HttpError("No such place exists", 500))
+    }
+    // try{
+    //     await place.remove()
+    // }
+    // catch(err){
+    //     console.log(err)
+    //     return next(new HttpError("Deleting the place failed", 500))
+    // }
+    // console.log(PlaceIndex)
+    // const newArr = UserData[0].places.filter(x => x.id != id)
     // console.log(newArr)
-    UserData[0].places = newArr
+    // UserData[0].places = newArr
 
-    res.status(201).json({"message": "Removed"})
+    res.status(200).json({"message": "Removed"})
 }
 
 exports.getUserPlacesbyId = getUserPlacesbyId
