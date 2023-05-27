@@ -6,18 +6,35 @@ const Place = require("../models/place")
 const {validationResult} = require("express-validator")
 const { v4: uuidv4 } = require('uuid');
 
-const getPlacebyId = (req, res, next) => {
-    const place = UserData[0].places[req.params.pid - 1]
+const getPlacebyId = async (req, res, next) => {
+    const placeId = req.params.pid
+    let place
+
+    try{
+        place = await Place.findById(placeId)
+    }
+    catch{
+        return next(new HttpError("Something went wrong...", 500))
+    }
 
     if(!place){
         return next(new HttpError("Could not find the place.", 404))
     }
 
-    res.json({place})
+    res.json({place: place.toObject( {getters: true} )})
 }
 
-const getUserPlacesbyId = (req, res, next) => {
-    const user = UserData[req.params.uid - 1].places
+const getUserPlacesbyId = async (req, res, next) => {
+    const userId = req.params.uid
+
+    let user
+
+    try{
+        user = await Place.find({creator: userId})
+    }
+    catch{
+        return next(new HttpError("Something went wrong...", 500))
+    }
 
     if(!user){
         return next(new HttpError("Could not find the user.", 404))
