@@ -5,6 +5,7 @@ const Place = require("../models/place")
 
 const {validationResult} = require("express-validator")
 const { v4: uuidv4 } = require('uuid');
+const e = require("express");
 
 const getPlacebyId = async (req, res, next) => {
     const placeId = req.params.pid
@@ -69,28 +70,36 @@ const createPlace = async (req,res,next) => {
     res.status(201).json({place: NewPlace})
 }
 
-const updatePlace = (req, res, next) => {
+const updatePlace = async (req, res, next) => {
     const errors = validationResult(req);
 
     if(!errors.isEmpty()){
         return next(new HttpError("Input not correct. Checkk again", 422))
     }
 
-    const id = parseInt(req.params.pid)
+    const placeId = req.params.pid
     const {name, image, caption} = req.body
 
-    const oldPlaceIndex = UserData[0].places.findIndex(x => x.id == id)
+    // const oldPlaceIndex = UserData[0].places.findIndex(x => x.id == id)
 
-    const updatedPlace = {
-        ...UserData[0].places[oldPlaceIndex],
-        id,
-        name,
-        image,
-        caption
+    let place;
+    try{
+        place = await Place.findById(placeId)
     }
-    UserData[0].places[oldPlaceIndex] = updatedPlace
+    catch{
+        return next(new HttpError("Could not find the place.", 404))
+    }
 
-    res.status(201).json({place: updatedPlace})
+    place.name = name
+    place.caption = caption
+
+    try{
+        place.save()
+    }catch{
+        return next(new HttpError("Something went wrong...", 500))
+    }
+
+    res.status(201).json({place: place.toObject({ getters: true})})
 }
 
 const deletePlace = async (req, res, next) => {
