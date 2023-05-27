@@ -1,5 +1,8 @@
 const UserData = require("../DUMMY/UserData")
+
 const HttpError = require("../models/httpError")
+const Place = require("../models/place")
+
 const {validationResult} = require("express-validator")
 const { v4: uuidv4 } = require('uuid');
 
@@ -23,22 +26,28 @@ const getUserPlacesbyId = (req, res, next) => {
     res.json({user})
 }
 
-const createPlace = (req,res,next) => {
+const createPlace = async (req,res,next) => {
     const errors = validationResult(req);
 
     if(!errors.isEmpty()){
         return next(new HttpError("Input not correct. Checkk again", 422))
     }
 
-    const {name, image, caption} = req.body
-    const NewPlace = {
-        id: uuidv4(),
+    const {name, image, caption, creator} = req.body
+    const NewPlace = new Place({
         name,
+        caption,
         image,
-        caption
-    }
+        creator
+    })
 
-    UserData[0].places.push(NewPlace)
+    // UserData[0].places.push(NewPlace)
+    try{
+        await NewPlace.save()
+    }
+    catch{
+        return next(new HttpError("Creating a new place failed, please try again", 500))
+    }
 
     res.status(201).json({place: NewPlace})
 }
