@@ -3,6 +3,7 @@ const HttpError = require("../models/httpError")
 const {validationResult} = require("express-validator")
 
 const { v4: uuidv4 } = require('uuid');
+const user = require("../models/user");
 
 const getUsers = (req, res, next) => {
 
@@ -13,24 +14,47 @@ const getUsers = (req, res, next) => {
     res.status(200).json({UserData})
 }
 
-const signUp = (req, res, next) => {
+const signUp = async (req, res, next) => {
     const errors = validationResult(req);
 
     if(!errors.isEmpty()){
         return next(new HttpError("Input not correct. Checkk again", 422))
     }
 
-    const { name, password, email } = req.body
+    const { name, password, email, places } = req.body
 
-    if (UserData.find(x => x.email === email)) {
+    let existingUser
+
+    try{
+        existingUser = await user.findOne({email: email})
+    }
+    catch{
+        return next(new HttpError("Signing up Failed", 500))
+    }
+
+    if (existingUser) {
         return next(new HttpError("Email already exists", 422))
     }
 
-    const newUser = { id: uuidv4(), name, password, email }
+    const NewUser = new user({ 
+        name,
+        email,
+        password,
+        image: "https://media.istockphoto.com/id/1200677760/photo/portrait-of-handsome-smiling-young-man-with-crossed-arms.jpg?b=1&s=612x612&w=0&k=20&c=t7Z7NBXf5t7jWqoFxsH7B3bgrO3_BznOOhqEXWywjOc=",
+        places
+    })
 
-    UserData.push(newUser);
+    // UserData.push(newUser);
 
-    res.status(201).json({newUser})
+    try{
+        await NewUser.save()
+    }
+    catch(err){
+        console.log(err)
+        return next(new HttpError("Creating a new user failed, please try again", 500))
+    }
+
+    res.status(201).json({user: NewUser.toObject({getters: true})})
 }
 
 const login = (req, res, next) => {
