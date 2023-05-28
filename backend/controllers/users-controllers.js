@@ -57,7 +57,7 @@ const signUp = async (req, res, next) => {
     res.status(201).json({user: NewUser.toObject({getters: true})})
 }
 
-const login = (req, res, next) => {
+const login = async (req, res, next) => {
     const errors = validationResult(req);
 
     if(!errors.isEmpty()){
@@ -66,9 +66,17 @@ const login = (req, res, next) => {
     
     const { password, email } = req.body
 
-    const IdentifiedUser = UserData.find(x => x.email === email)
+    // const IdentifiedUser = UserData.find(x => x.email === email)
+    let existingUser
 
-    if(!IdentifiedUser || IdentifiedUser.password !== password){
+    try{
+        existingUser = await user.findOne({email: email})
+    }
+    catch{
+        return next(new HttpError("Signing up Failed", 500))
+    }
+
+    if(!existingUser || existingUser.password !== password){
         return next(new HttpError("Incorrect credentials entered...", 401))
     }
 
