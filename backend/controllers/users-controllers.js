@@ -5,13 +5,17 @@ const {validationResult} = require("express-validator")
 const { v4: uuidv4 } = require('uuid');
 const user = require("../models/user");
 
-const getUsers = (req, res, next) => {
+const getUsers = async (req, res, next) => {
 
-    // if(!place){
-    //     return next(new HttpError("Could not find the place.", 404))
-    // }
+    let users;
+    try{
+        users = await user.find({}, '-password')
+    }catch(err){
+        console.log(err)
+        return next(new HttpError("Fetching Users failed, Please try again", 500))
+    }
     
-    res.status(200).json({UserData})
+    res.status(200).json({users: users.map((x) => x.toObject({getters: true}))})
 }
 
 const signUp = async (req, res, next) => {
