@@ -25,7 +25,7 @@ const signUp = async (req, res, next) => {
         return next(new HttpError("Input not correct. Checkk again", 422))
     }
 
-    const { name, password, email, places } = req.body
+    const { name, password, email } = req.body
 
     let existingUser
 
@@ -45,7 +45,7 @@ const signUp = async (req, res, next) => {
         email,
         password,
         image: "https://media.istockphoto.com/id/1200677760/photo/portrait-of-handsome-smiling-young-man-with-crossed-arms.jpg?b=1&s=612x612&w=0&k=20&c=t7Z7NBXf5t7jWqoFxsH7B3bgrO3_BznOOhqEXWywjOc=",
-        places
+        places: []
     })
 
     // UserData.push(newUser);

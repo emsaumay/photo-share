@@ -1,11 +1,9 @@
-const UserData = require("../DUMMY/UserData")
-
 const HttpError = require("../models/httpError")
 const Place = require("../models/place")
+const User = require("../models/user")
 
 const {validationResult} = require("express-validator")
-const { v4: uuidv4 } = require('uuid');
-const e = require("express");
+const mongoose  = require("mongoose")
 
 const getPlacebyId = async (req, res, next) => {
     const placeId = req.params.pid
@@ -51,19 +49,39 @@ const createPlace = async (req,res,next) => {
         return next(new HttpError("Input not correct. Checkk again", 422))
     }
 
-    const {name, image, caption, creator} = req.body
+    const {name, caption, creator} = req.body
     const NewPlace = new Place({
         name,
         caption,
-        image,
+        image: "",
         creator
     })
 
     // UserData[0].places.push(NewPlace)
+    let user;
+
     try{
-        await NewPlace.save()
+        user = await User.findById(creator)
+    }catch{
+        return next(new HttpError("Creating a new place failed, please try again", 500))
     }
-    catch{
+
+    if (!user) {
+        return next(new HttpError("Could not find user for provided id", 404))
+    }
+
+    console.log(user)
+
+    try{
+        const session = await mongoose.startSession()
+        session.startTransaction(); 
+        await NewPlace.save({ session: session})
+        user.places.push(NewPlace)
+        await user.save({session: session})
+        await session.commitTransaction()
+    }
+    catch(err){
+        console.log(err)
         return next(new HttpError("Creating a new place failed, please try again", 500))
     }
 

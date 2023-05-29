@@ -1,24 +1,25 @@
-const {mongoose} = require("mongoose")
+const { mongoose } = require("mongoose");
 
-const Schema = mongoose.Schema
+const Schema = mongoose.Schema;
 
 const placeSchema = new Schema({
-   name: {
+  name: {
     type: String,
-    required: true
-   },
-   caption: {
+    required: true,
+  },
+  caption: {
     type: String,
-    required: true
-   },
-   image:{
+    required: true,
+  },
+  image: {
     type: String,
-    required: true
-   },
-   creator: {
-    type: String,
-    required: true
-   }
-})
+    required: false,
+  },
+  creator: {
+    type: mongoose.Types.ObjectId,
+    required: true,
+    ref: "User",
+  },
+});
 
-module.exports = mongoose.model('Place', placeSchema);
+module.exports = mongoose.model("Place", placeSchema);
