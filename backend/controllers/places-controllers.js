@@ -129,18 +129,30 @@ const deletePlace = async (req, res, next) => {
     // }
     let place
     try{
-        place = await Place.deleteOne({_id : placeId})
+        place = await Place.findById(placeId).populate('creator')
+        console.log(place)
     }
     catch{
-        return next(new HttpError("No such place exists", 500))
+        return next(new HttpError("Something went wrong, could not delete the place.", 500))
     }
-    // try{
-    //     await place.remove()
-    // }
-    // catch(err){
-    //     console.log(err)
-    //     return next(new HttpError("Deleting the place failed", 500))
-    // }
+
+    if(!place){
+        return next(new HttpError("Could not find place for this id.", 404))
+    }
+
+    try{
+        const session = await mongoose.startSession()
+        session.startTransaction(); 
+        await place.deleteOne({_id : placeId, session: session})
+        place.creator.places.pull(place)
+        await place.creator.save({session: session})
+        await session.commitTransaction()
+    }
+    catch(err){
+        console.log(err)
+        return next(new HttpError("Something went wrong, could not delete the place.", 500))
+    }
+
     // console.log(PlaceIndex)
     // const newArr = UserData[0].places.filter(x => x.id != id)
     // console.log(newArr)
