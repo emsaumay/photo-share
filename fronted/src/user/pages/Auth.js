@@ -8,10 +8,14 @@ import { useForm } from '../../shared/hooks/form-hook'
 
 import "./Auth.css"
 import { AuthContext } from '../../shared/context/auth-context'
+import LoadingSpinner from '../../shared/Components/UIElements/LoadingSpinner'
+import ErrorModal from '../../shared/Components/UIElements/ErrorModal'
 
 const Auth = () => {
     const Auth = useContext(AuthContext)
     const [isLoginMode, setIsLoginMode] = useState(true)
+    const [isLoading, setIsLoading] = useState(false)
+    const [error, setError] = useState(null)
 
     const [formState, InputHandler, setFormValue] = useForm({
         Email:{
@@ -66,6 +70,7 @@ const Auth = () => {
         }
         else{
             try{
+                setIsLoading(true)
                 const response = await fetch("http://localhost:5000/api/users/signup", {
                 method: 'POST',
                 headers: {
@@ -79,19 +84,29 @@ const Auth = () => {
 
                 })
                 const responseData =  await response.json()
+                if (!response.ok) {
+                    throw new Error(responseData.message)
+                }
                 console.log(responseData)
+                
+                setIsLoading(false)
+                Auth.login()
             }
             catch(err){
+                setIsLoading(false)
+                setError(err.message || "Something Went Wrong! Please try again...")
                 console.log(err)
             }
         }
-        Auth.login()
         }
         
     
 
   return (
+    <>
+    <ErrorModal error={error} onClear={() => setError(null)}/>
     <div className='place-form authentication'>
+    {isLoading && <LoadingSpinner asOverlay/>}
     <form onSubmit={submitHandler}>
         {!isLoginMode && 
             <Input
@@ -132,6 +147,7 @@ const Auth = () => {
         Switch to {isLoginMode ? "Sign up" : "Log in" }
     </Button> 
     </div>
+    </>
   )
 }
 
