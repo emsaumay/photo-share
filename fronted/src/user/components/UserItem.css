@@ -36,9 +36,11 @@
 }
 
 .user-name{
-    width: 100px;
-    padding-right: 300px;
+    width: 300px;
+    padding-right: 100px;
     margin-bottom: 5px;
+    text-decoration: none;
+    color: rgb(56, 15, 168);
 
 }
 
@@ -57,6 +59,8 @@
 .user-places{
     margin: 0;
     margin-top: 10px;
+    color: rgb(56, 15, 168);
+
 }
 
 .user-link{

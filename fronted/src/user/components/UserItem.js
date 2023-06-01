@@ -17,7 +17,7 @@ function UserItem(props){
 
                     </div>
                     <p className="user-occupation">{props.occupation}</p>
-                    <h5 className="user-places">{props.place} {props.place === 1 ? "Place" : "Places"}</h5>
+                    <h5 className="user-places">{props.places.length} {props.place === 1 ? "Place" : "Places"}</h5>
                  
                 </div>
             </li>

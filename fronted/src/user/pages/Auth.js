@@ -48,29 +48,38 @@ const Auth = () => {
 
     const submitHandler = async event => {
         event.preventDefault()
-        if (isLoginMode) {
-            // try{
-            //     const response = await fetch("http://localhost:5000/api/users/login", {
-            //     method: 'POST',
-            //     headers: {
-            //         'Content-Type': 'application/json'
-            //     },
-            //     body: JSON.stringify({
-            //         email: formState.inputs.Email.value,
-            //         password: formState.inputs.Password.value
-            //     }) 
 
-            //     })
-            // const responseData =  await response.json()
-            //     console.log(responseData)
-            // }
-            // catch(err){
-            //     console.log(err)
-            // }
+        setIsLoading(true)
+
+        if (isLoginMode) {
+            try{
+                const response = await fetch("http://localhost:5000/api/users/login", {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    email: formState.inputs.Email.value,
+                    password: formState.inputs.Password.value
+                }) 
+
+                })
+                const responseData =  await response.json()
+                if (!response.ok) {
+                    throw new Error(responseData.message)
+                }
+                
+                setIsLoading(false)
+                Auth.login()
+            }
+            catch(err){
+                setIsLoading(false)
+                setError(err.message || "Something Went Wrong! Please try again...")
+                console.log(err)
+            }
         }
         else{
             try{
-                setIsLoading(true)
                 const response = await fetch("http://localhost:5000/api/users/signup", {
                 method: 'POST',
                 headers: {
@@ -87,7 +96,6 @@ const Auth = () => {
                 if (!response.ok) {
                     throw new Error(responseData.message)
                 }
-                console.log(responseData)
                 
                 setIsLoading(false)
                 Auth.login()
