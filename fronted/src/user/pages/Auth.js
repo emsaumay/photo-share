@@ -23,7 +23,6 @@ const Auth = () => {
             isValid: false
         }
     }, false)
-
     const switchModeHandler = () => {
         if(!isLoginMode){
             setFormValue({
@@ -34,7 +33,7 @@ const Auth = () => {
         else{
             setFormValue({
                 ...formState.inputs,
-                name: {
+                Name: {
                     value: "",
                     isValid: false
                 }
@@ -43,18 +42,60 @@ const Auth = () => {
         setIsLoginMode(prevMode => !prevMode)
     }
 
-    const submitHandler = event => {
+    const submitHandler = async event => {
         event.preventDefault()
+        if (isLoginMode) {
+            // try{
+            //     const response = await fetch("http://localhost:5000/api/users/login", {
+            //     method: 'POST',
+            //     headers: {
+            //         'Content-Type': 'application/json'
+            //     },
+            //     body: JSON.stringify({
+            //         email: formState.inputs.Email.value,
+            //         password: formState.inputs.Password.value
+            //     }) 
+
+            //     })
+            // const responseData =  await response.json()
+            //     console.log(responseData)
+            // }
+            // catch(err){
+            //     console.log(err)
+            // }
+        }
+        else{
+            try{
+                const response = await fetch("http://localhost:5000/api/users/signup", {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    name: formState.inputs.Name.value,
+                    email: formState.inputs.Email.value,
+                    password: formState.inputs.Password.value
+                }) 
+
+                })
+                const responseData =  await response.json()
+                console.log(responseData)
+            }
+            catch(err){
+                console.log(err)
+            }
+        }
         Auth.login()
-        console.log(formState.inputs)
-    }
+        }
+        
+    
 
   return (
     <div className='place-form authentication'>
     <form onSubmit={submitHandler}>
         {!isLoginMode && 
             <Input
-            id="name"
+            id="Name"
             type="name"
             element="input"
             label="Your Name"
