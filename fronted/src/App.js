@@ -15,14 +15,17 @@ import Auth from './user/pages/Auth';
 
 function App() {
   const [isLoggedin, setIsLoggedin] = useState(false)
+  const [userId, setUserId] = useState(null)
    
-  const Login = useCallback(() => {
+  const Login = useCallback((uid) => {
     setIsLoggedin(true)
+    setUserId(uid)
   }, [])
 
   
   const Logout = useCallback(() => {
     setIsLoggedin(false)
+    setUserId(null)
   }, [])
 
   let routes;
@@ -51,7 +54,7 @@ function App() {
   }
 
   return (
-    <AuthContext.Provider value={{isLoggedin: isLoggedin, login: Login, logout: Logout}}>
+    <AuthContext.Provider value={{isLoggedin: isLoggedin, userId: userId, login: Login, logout: Logout}}>
       <Router>
         <NavMain/>
         <Routes>
