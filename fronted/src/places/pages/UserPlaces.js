@@ -1,14 +1,39 @@
-import React from "react";
+import React, {useEffect, useState} from "react";
 import { useParams } from "react-router-dom";
 
+import { useHttpClient } from "../../shared/hooks/http-hook";
+import ErrorModal from "../../shared/Components/UIElements/ErrorModal";
+import LoadingSpinner from "../../shared/Components/UIElements/LoadingSpinner";
 import PlaceList from "../components/PlaceList";
 
 const UserPlaces = props => {
+    const {isLoading, error, clearError, sendRequest} = useHttpClient()
+    const [loadedPlaces, setLoadedPlaces] = useState(null)
+
     const {userId} = useParams();
-    const id = parseInt(userId[1])
+
+    useEffect(() => {
+        const getPlaces = async () => {
+            try{
+                const response = await sendRequest(`http://localhost:5000/api/places/user/${userId}`)
+                setLoadedPlaces(response.user)
+            }
+            catch(err){
+                console.log(err)
+            }
+        }
+        getPlaces();
+    }, [])
+
     return(
         <div>
-            <PlaceList user={id-1} showEdit={false}/>
+            <ErrorModal error={error} onClear={clearError}/>
+        {isLoading && (
+        <div className="center">
+          <LoadingSpinner />
+        </div>
+      )}
+            {!isLoading && loadedPlaces && <PlaceList user={loadedPlaces} showEdit={false}/>}
         </div>
     )
 }

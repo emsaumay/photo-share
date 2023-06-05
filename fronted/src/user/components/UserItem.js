@@ -4,7 +4,7 @@ import "./UserItem.css"
 
 function UserItem(props){
     return(
-        <Link to={`u${props.id}/places`} className="user-link">
+        <Link to={`${props.id}/places`} className="user-link">
             <li className="user-info">
                 <div className="user-image-container">
                     <img className="user-image" src={props.image} alt={props.name}/>

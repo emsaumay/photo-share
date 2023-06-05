@@ -31,7 +31,8 @@ const getUserPlacesbyId = async (req, res, next) => {
     try{
         user = await Place.find({creator: userId})
     }
-    catch{
+    catch(err){
+        console.log(err)
         return next(new HttpError("Something went wrong...", 500))
     }
 

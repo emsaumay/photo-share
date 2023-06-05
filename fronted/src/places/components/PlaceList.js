@@ -1,4 +1,4 @@
-import React from "react"; 
+import React, { useEffect, useState } from "react"; 
 
 import "./PlaceList.css"
 
@@ -9,10 +9,10 @@ import PlaceItem from "./PlaceItem";
 const PlaceList = props => {
     return(
         <ul className="places-list">
-            {UserData[props.user].places.map(place => {
+            {props.user.map(place => {
                 return (<PlaceItem
-                    key={place.id}
-                    id={place.id}
+                    key={place._id}
+                    id={place._id}
                     name={place.name}
                     image="https://cdn.mos.cms.futurecdn.net/yCPyoZDQBBcXikqxkeW2jJ-1200-80.jpg"
                     caption={place.caption}
