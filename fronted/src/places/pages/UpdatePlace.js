@@ -1,66 +1,105 @@
-import React, { useEffect, useState } from 'react'
-import { useParams } from 'react-router-dom'
+import React, { useEffect, useState } from "react";
+import { useParams, useNavigate } from "react-router-dom";
 
-import {UserData} from"../../shared/UserData"
-import Input from '../../shared/Components/FormElements/Input'
-import Button from '../../shared/Components/FormElements/Button'
-import { VALIDATOR_REQUIRE } from '../../shared/util/validators'
+import Input from "../../shared/Components/FormElements/Input";
+import Button from "../../shared/Components/FormElements/Button";
+import { VALIDATOR_REQUIRE } from "../../shared/util/validators";
 
-import { useForm } from '../../shared/hooks/form-hook'
+import { useForm } from "../../shared/hooks/form-hook";
+import { useHttpClient } from "../../shared/hooks/http-hook";
 
-import "./PlaceForm.css"
+import "./PlaceForm.css";
+import ErrorModal from "../../shared/Components/UIElements/ErrorModal";
+import LoadingSpinner from "../../shared/Components/UIElements/LoadingSpinner";
 
 const UpdatePlace = () => {
-  const [loading, setLoading] = useState(true)
+  const { isLoading, sendRequest, error, clearError } = useHttpClient();
+  const [place, setPlace] = useState(null);
 
-    const userId = useParams().userId
-    const placeId = useParams().placeId
-    const place = UserData[parseInt(userId[1]) - 1].places[placeId]
+  const Navigate = useNavigate();
 
-    const [formState, InputHandler, setFormValue] = useForm({
-      Caption:{
-          value: "",
-          isValid: false
+  const userId = useParams().userId;
+  const placeId = useParams().placeId;
+  // const place = UserData[parseInt(userId[1]) - 1].places[placeId]
+
+  const [formState, InputHandler, setFormValue] = useForm(
+    {
+      Caption: {
+        value: "",
+        isValid: false,
       },
-      Location:{
-          value: "",
-          isValid: false
+      Location: {
+        value: "",
+        isValid: false,
+      },
+    },
+    false
+  );
+
+
+  useEffect(() => {
+    const getPlace = async () => {
+      try {
+        const responseData = await sendRequest(
+          `http://localhost:5000/api/places/${placeId}`
+        );
+        setPlace(responseData.place);
+        setFormValue(
+          {
+            Caption: {
+              value: responseData.place.caption,
+              isValid: true,
+            },
+            Location: {
+              value: responseData.place.name,
+              isValid: true,
+            },
+          },
+          true
+        );
+      } catch (err) {
+        console.log(err);
       }
-    }, false)
+    };
+    getPlace();
+  }, [sendRequest, placeId, setFormValue])
 
-    useEffect(() => {
-      setFormValue({
-        Caption:{
-          value: place.caption,
-          isValid: true
-        },
-        Location:{
-          value: place.name,
-          isValid: true
+  
+
+
+  const submitHandler = async (event) => {
+    event.preventDefault();
+    try{
+      await sendRequest(
+      `http://localhost:5000/api/places/${placeId}`,
+      "PATCH",
+        JSON.stringify({
+          name: formState.inputs.Location.value,
+          caption: formState.inputs.Caption.value
+        }),{
+          "Content-Type" : "application/json"
         }
-      }, true)
-      setLoading(false)
-    }, [setFormValue, place])
+      )
+      Navigate(`/${userId}/place`)
+    }
+    catch(err){
+      console.log(err)
+    }
+  };
 
-    
 
-    const submitHandler = event => {
-      event.preventDefault()
-      console.log(formState.inputs)
-  }
-
-  if(loading){
-    return(
-      <div className='center'>
-        Loading
-      </div>
-    )
-  }
-
-    // console.log(userId)
+  // console.log(userId)
   return (
-    <form className="place-form" onSubmit={submitHandler}>
-        <Input
+    <>
+      <ErrorModal error={error} onClear={clearError} />
+      {isLoading && 
+        <div style={{margin: "auto"}}>
+          <LoadingSpinner asOverlay />
+        </div>
+        }
+      {!isLoading && place && (
+        <form className="place-form" onSubmit={submitHandler}>
+          <Input
             id="Location"
             element="input"
             type="text"
@@ -70,8 +109,8 @@ const UpdatePlace = () => {
             onInput={InputHandler}
             value={formState.inputs.Location.value}
             valid={formState.inputs.Location.isValid}
-        />
-        <Input
+          />
+          <Input
             id="Caption"
             element="textarea"
             label="Caption"
@@ -80,10 +119,14 @@ const UpdatePlace = () => {
             onInput={InputHandler}
             value={formState.inputs.Caption.value}
             valid={formState.inputs.Caption.isValid}
-        />
-        <Button type="submit" disabled={!formState.isValid}>Update Place</Button>
-    </form>
-  )
-}
+          />
+          <Button type="submit" disabled={!formState.isValid}>
+            Update Place
+          </Button>
+        </form>
+      )}
+    </>
+  );
+};
 
-export default UpdatePlace
+export default UpdatePlace;

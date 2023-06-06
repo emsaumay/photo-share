@@ -37,7 +37,7 @@ function App() {
         <Route path="/places/new" element={<NewPlace/>} exact/>
         <Route path="/:userId/place/edit/:placeId" element={<UpdatePlace/>} exact/>
         <Route path="/:userId/places" element={<UserPlaces/>} exact/>
-        <Route path="/u1/place" element={<UserPlace/>} exact/>
+        <Route path="/:userId/place" element={<UserPlace/>} exact/>
         <Route path='/*' element={<Navigate to="/"/>}/>
       </>
     );
