@@ -40,7 +40,6 @@ function NewPlace(props){
             }
         )
         navigate("/")
-        console.log(navigate)
         }
         catch(err){
             console.log(err)

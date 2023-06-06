@@ -2,9 +2,17 @@ import React, { useState } from "react";
 import Button from "../../shared/Components/FormElements/Button";
 import Map from "../../shared/Components/UIElements/Map";
 import Modal from "../../shared/Components/UIElements/Modal";
+import LoadingSpinner from "../../shared/Components/UIElements/LoadingSpinner";
+import ErrorModal from "../../shared/Components/UIElements/ErrorModal";
+
+
+import { useHttpClient } from "../../shared/hooks/http-hook";
+
 import "./PlaceItem.css"
 
 const PlaceItem = props => {
+    const {isLoading,error, sendRequest, clearError} = useHttpClient();
+
     const [showMap, setShowMap] =useState(false);
     const [deleteMessage, setDeleteMessage] = useState(false)
 
@@ -14,8 +22,20 @@ const PlaceItem = props => {
     const openMapHandler = () => setShowMap(true)
     const closeMapHandler = () => setShowMap(false)
 
+    const deletePlaceHandler = async () => {
+        try{
+            await sendRequest(`http://localhost:5000/api/places/${props.id}`, "DELETE")
+            // closedeleteMessageHandler()
+            props.onDelete(props.id)
+        }
+        catch(err){
+            console.log(err)
+        }
+    }
+
     return(
     <>
+        <ErrorModal error={error} onClear={clearError} />
         <Modal 
             show={showMap} 
             onCancel={closeMapHandler} 
@@ -32,8 +52,8 @@ const PlaceItem = props => {
             show={deleteMessage}
             onCancel={closedeleteMessageHandler}
             header="Confirm?" 
-            footer={<div>
-                    <Button danger>Yes</Button>
+            footer={isLoading ? <LoadingSpinner/> : <div>
+                    <Button danger onClick={deletePlaceHandler}>Yes</Button>
                     <Button onClick={closedeleteMessageHandler} inverse>Cancel</Button>
                 </div>
             }

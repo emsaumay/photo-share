@@ -1,8 +1,7 @@
-import React, { useEffect, useState } from "react"; 
+import React from "react"; 
 
 import "./PlaceList.css"
 
-import { UserData } from "../../shared/UserData";
 import PlaceItem from "./PlaceItem";
 
 
@@ -17,6 +16,7 @@ const PlaceList = props => {
                     image="https://cdn.mos.cms.futurecdn.net/yCPyoZDQBBcXikqxkeW2jJ-1200-80.jpg"
                     caption={place.caption}
                     showEdit = {props.showEdit}
+                    onDelete={props.onDelete}
                 />
             )})}
         </ul>

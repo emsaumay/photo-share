@@ -25,6 +25,12 @@ const UserPlaces = props => {
         getPlaces();
     }, [])
 
+    const deleteHandle = (placeId) => {
+        setLoadedPlaces(
+            prevPlace => prevPlace.filter(place => place._id !== placeId)
+        )
+    }
+
     return(
         <div>
             <ErrorModal error={error} onClear={clearError}/>
@@ -33,7 +39,7 @@ const UserPlaces = props => {
           <LoadingSpinner />
         </div>
       )}
-            {!isLoading && loadedPlaces && <PlaceList user={loadedPlaces} showEdit={true}/>}
+            {!isLoading && loadedPlaces && <PlaceList user={loadedPlaces} showEdit={true} onDelete={deleteHandle}/>}
         </div>
     )
 }
