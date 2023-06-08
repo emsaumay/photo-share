@@ -11,6 +11,7 @@ import { AuthContext } from '../../shared/context/auth-context'
 import LoadingSpinner from '../../shared/Components/UIElements/LoadingSpinner'
 import ErrorModal from '../../shared/Components/UIElements/ErrorModal'
 import { useHttpClient } from '../../shared/hooks/http-hook'
+import ImageUpload from '../../shared/Components/FormElements/ImageUpload'
 
 const Auth = () => {
     const Auth = useContext(AuthContext)
@@ -96,7 +97,8 @@ const Auth = () => {
     <div className='place-form authentication'>
     {isLoading && <LoadingSpinner asOverlay/>}
     <form onSubmit={submitHandler}>
-        {!isLoginMode && 
+        {!isLoginMode && (
+            <>
             <Input
             id="Name"
             type="name"
@@ -106,6 +108,9 @@ const Auth = () => {
             errorText="Please provide a name."
             onInput={InputHandler}
         />
+        <ImageUpload center id="image"/>
+        </>
+        )
         }
         <Input
             id="Email"
