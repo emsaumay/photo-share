@@ -1,14 +1,31 @@
-const express = require("express")
-const {check} = require("express-validator")
+const express = require("express");
+const { check } = require("express-validator");
 
 const router = express.Router();
 
-const usersController = require("../controllers/users-controllers")
+const usersController = require("../controllers/users-controllers");
+const fileUpload = require("../middleware/file-upload");
 
-router.get("/", usersController.getUsers)
+router.get("/", usersController.getUsers);
 
-router.post("/signup",[check('name').not().isEmpty(), check('password').not().isEmpty(), check('email').normalizeEmail().isEmail()], usersController.signUp)
+router.post(
+  "/signup",
+  fileUpload.single('image'),
+  [
+    check("name").not().isEmpty(),
+    check("password").not().isEmpty(),
+    check("email").normalizeEmail().isEmail(),
+  ],
+  usersController.signUp
+);
 
-router.post("/login",[check('password').not().isEmpty(), check('email').normalizeEmail().isEmail()], usersController.login)
+router.post(
+  "/login",
+  [
+    check("password").not().isEmpty(),
+    check("email").normalizeEmail().isEmail(),
+  ],
+  usersController.login
+);
 
 module.exports = router;
