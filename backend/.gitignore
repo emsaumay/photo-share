@@ -1,5 +1,5 @@
 # See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
-
+/uploads/images
 /src/places/pages/CityData.js
 /src/Test
 # dependencies

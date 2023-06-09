@@ -10,6 +10,7 @@ router.get("/", usersController.getUsers);
 
 router.post(
   "/signup",
+  // We are looking for the image key here
   fileUpload.single('image'),
   [
     check("name").not().isEmpty(),

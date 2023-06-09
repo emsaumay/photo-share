@@ -32,7 +32,7 @@ const Auth = () => {
         if(!isLoginMode){
             setFormValue({
                 ...formState.inputs,
-                name: undefined,
+                Name: undefined,
                 image: undefined
             },formState.inputs.Email.isValid && formState.inputs.Password.isValid   )
         }
@@ -76,15 +76,16 @@ const Auth = () => {
         }
         else{
             try{
+                // FormData is the data type provided in regular js to handle form data apart from regular js (like file for ex)
+                // Files are stored as binary so we cant share them in json
+                const formData = new FormData()
+                formData.append('email', formState.inputs.Email.value)
+                formData.append('name', formState.inputs.Name.value)
+                formData.append('password', formState.inputs.Password.value)
+                formData.append('image', formState.inputs.image.value)
                 const responseData = await sendRequest("http://localhost:5000/api/users/signup",'POST',
-                JSON.stringify({
-                    name: formState.inputs.Name.value,
-                    email: formState.inputs.Email.value,
-                    password: formState.inputs.Password.value
-                }) 
-                ,{
-                    'Content-Type': 'application/json'
-                },
+                // The Form Data automatically sets the right headers for the request and hence we dont need to specify them manually
+                formData
                 )
                 Auth.login(responseData.user.id)
             }
