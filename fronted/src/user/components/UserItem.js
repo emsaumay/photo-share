@@ -7,7 +7,7 @@ function UserItem(props){
         <Link to={`${props.id}/places`} className="user-link">
             <li className="user-info">
                 <div className="user-image-container">
-                    <img className="user-image" src={props.image} alt={props.name}/>
+                    <img className="user-image" src={`http://localhost:5000/${props.image}`} alt={props.name}/>
 
                 </div>
                 <div className="user-text">

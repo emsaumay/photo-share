@@ -38,11 +38,13 @@ const signUp = async (req, res, next) => {
         return next(new HttpError("Email already exists", 422))
     }
 
+    // "https://img.favpng.com/12/24/20/user-profile-get-em-cardiovascular-disease-zingah-png-favpng-9ctaweJEAek2WaHBszecKjXHd.jpg"
     const NewUser = new user({ 
         name,
         email,
         password,
-        image: "https://img.favpng.com/12/24/20/user-profile-get-em-cardiovascular-disease-zingah-png-favpng-9ctaweJEAek2WaHBszecKjXHd.jpg",
+        // File path stored as https://localhost:5000/uploads/images/filename.ext
+        image: req.file.path,
         places: []
     })
 

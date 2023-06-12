@@ -1,5 +1,6 @@
 const express = require("express");
 const fs = require("fs")
+const path = require("path")
 const bodyParser = require("body-parser");
 const mongoose = require("mongoose");
 
@@ -9,6 +10,10 @@ const users = require("./routes/users-routes");
 const app = express();
 
 app.use(bodyParser.json());
+
+// Just returns the requested file, static serving means we just return the file 
+// All other server files are locked down but the files within this folder are returned
+app.use('/uploads/images', express.static(path.join('uploads','images')))
 
 app.use((req,res,next) => {
   res.setHeader('Access-Control-Allow-Origin', '*')
