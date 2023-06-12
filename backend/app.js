@@ -1,4 +1,5 @@
 const express = require("express");
+const fs = require("fs")
 const bodyParser = require("body-parser");
 const mongoose = require("mongoose");
 
@@ -20,6 +21,11 @@ app.use("/api/places", places);
 app.use("/api/users", users);
 
 app.use((error, req, res, next) => {
+  if (req.file) {
+    fs.unlink(req.file.path, err => {
+      console.log(err)
+    })
+  }
   if (res.headerSent) {
     return next(error);
   }
