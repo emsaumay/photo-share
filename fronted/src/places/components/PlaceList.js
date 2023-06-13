@@ -13,7 +13,7 @@ const PlaceList = props => {
                     key={place._id}
                     id={place._id}
                     name={place.name}
-                    image="https://cdn.mos.cms.futurecdn.net/yCPyoZDQBBcXikqxkeW2jJ-1200-80.jpg"
+                    image={`http://localhost:5000/${place.image}`}
                     caption={place.caption}
                     showEdit = {props.showEdit}
                     onDelete={props.onDelete}

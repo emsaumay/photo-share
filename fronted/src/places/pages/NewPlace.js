@@ -9,6 +9,7 @@ import { useHttpClient } from "../../shared/hooks/http-hook";
 import { AuthContext } from "../../shared/context/auth-context";
 import ErrorModal from "../../shared/Components/UIElements/ErrorModal";
 import LoadingSpinner from "../../shared/Components/UIElements/LoadingSpinner";
+import ImageUpload from "../../shared/Components/FormElements/ImageUpload";
 
 function NewPlace(props){
     const auth = useContext(AuthContext)
@@ -22,6 +23,10 @@ function NewPlace(props){
         Location:{
             value: '',
             isValid: false
+        },
+        image: {
+            value: null,
+            isValid: false
         }
     }, false)
 
@@ -30,16 +35,15 @@ function NewPlace(props){
     const submitHandler = async event => {
         event.preventDefault()
         try{
+            const formData = new FormData()
+            formData.append('caption', formState.inputs.Caption.value)
+            formData.append('name', formState.inputs.Location.value)
+            formData.append('image', formState.inputs.image.value)
+            formData.append('creator', auth.userId)
             await sendRequest("http://localhost:5000/api/places/", "POST", 
-            JSON.stringify({
-                caption: formState.inputs.Caption.value,
-                name: formState.inputs.Location.value,
-                creator: auth.userId
-            }),{
-                'Content-Type': 'application/json'
-            }
-        )
-        navigate("/")
+            formData
+            )
+        navigate("/" + auth.userId + "/place")
         }
         catch(err){
             console.log(err)
@@ -53,6 +57,7 @@ function NewPlace(props){
         <ErrorModal error={error} onClear={clearError}/>
         <form className="place-form" onSubmit={submitHandler}>
             {isLoading && <LoadingSpinner/>}
+            <ImageUpload center id="image" onInput={InputHandler}/>
             <Input 
                 id="Location"
                 element="input" 
