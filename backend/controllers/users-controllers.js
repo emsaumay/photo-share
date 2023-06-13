@@ -1,4 +1,5 @@
 const HttpError = require("../models/httpError")
+const bcrypt = require("bcryptjs")
 const {validationResult} = require("express-validator")
 
 const user = require("../models/user");
@@ -38,11 +39,19 @@ const signUp = async (req, res, next) => {
         return next(new HttpError("Email already exists", 422))
     }
 
+    let hashedPassword
+    try{
+        hashedPassword = await bcrypt.hash(password, 12)
+    } catch(err){
+        console.log(err)
+        return next(new HttpError("Creating a new user failed, please try again", 500))
+    }
+
     // "https://img.favpng.com/12/24/20/user-profile-get-em-cardiovascular-disease-zingah-png-favpng-9ctaweJEAek2WaHBszecKjXHd.jpg"
     const NewUser = new user({ 
         name,
         email,
-        password,
+        password: hashedPassword,
         // File path stored as https://localhost:5000/uploads/images/filename.ext
         image: req.file.path,
         places: []
@@ -77,11 +86,23 @@ const login = async (req, res, next) => {
         existingUser = await user.findOne({email: email})
     }
     catch{
-        return next(new HttpError("Signing up Failed", 500))
+        return next(new HttpError("Logging in Failed", 500))
     }
 
-    if(!existingUser || existingUser.password !== password){
-        return next(new HttpError("Incorrect credentials entered...", 401))
+    if(!existingUser){
+        return next(new HttpError("Logging in Failed, Check your credentials and try again...", 401))
+    }
+
+    let isValidPassword = false;
+    try{
+        isValidPassword = await bcrypt.compare(password, existingUser.password)
+    }
+    catch{
+        return next(new HttpError("Logging in Failed... Please try again after some time", 500))
+    }
+
+    if (!isValidPassword) {
+        return next(new HttpError("Logging in Failed, Check your credentials and try again...", 401))
     }
 
     res.json({message: "Logged in!", user: existingUser.toObject({ getters: true})} )
