@@ -1,4 +1,5 @@
 const HttpError = require("../models/httpError")
+const fs = require("fs")
 const Place = require("../models/place")
 const User = require("../models/user")
 
@@ -140,6 +141,13 @@ const deletePlace = async (req, res, next) => {
     if(!place){
         return next(new HttpError("Could not find place for this id.", 404))
     }
+
+    // Deletion of image is placed under no restriction as even if it fails, there is no issue
+    // And we can always perform a manual deletion
+    const imgPath = place.image
+    fs.unlink(imgPath, err => {
+        console.log(err)
+    })
 
     try{
         const session = await mongoose.startSession()
