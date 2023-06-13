@@ -37,6 +37,9 @@ const ImageUpload = (props) => {
       fileIsValid = false
     
     }
+    if (file) {
+      fileIsValid = true
+    }
     // We initialise a new fileIsValid variable and passing it down to the onInput
     // Because the state change of isValid doesn't take place immediately
     props.onInput(props.id, pickedFile, fileIsValid)
