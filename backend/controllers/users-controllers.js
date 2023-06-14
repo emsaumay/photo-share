@@ -1,6 +1,7 @@
 const HttpError = require("../models/httpError")
 const bcrypt = require("bcryptjs")
 const {validationResult} = require("express-validator")
+const jwt = require("jsonwebtoken")
 
 const user = require("../models/user");
 
@@ -67,7 +68,21 @@ const signUp = async (req, res, next) => {
         return next(new HttpError("Creating a new user failed, please try again", 500))
     }
 
-    res.status(201).json({user: NewUser.toObject({getters: true})})
+    // A token can not be manipualted, because it is signed with the secret key.
+    let token
+    try{
+        token = jwt.sign({
+        userId: NewUser.id,
+        email: NewUser.email
+    }, 'donthekmepls', {
+        expiresIn: '1h',
+    })
+    } catch (err){
+        return next(new HttpError("Signing up failed, please try again", 500))
+    }
+    
+
+    res.status(201).json({ userId: NewUser.id, email: NewUser.email, token: token})
 }
 
 const login = async (req, res, next) => {
@@ -105,7 +120,21 @@ const login = async (req, res, next) => {
         return next(new HttpError("Logging in Failed, Check your credentials and try again...", 401))
     }
 
-    res.json({message: "Logged in!", user: existingUser.toObject({ getters: true})} )
+    let token
+    try{
+        token = jwt.sign({
+        userId: existingUser.id,
+        email: existingUser.email
+    }, 'donthekmepls', {
+        expiresIn: '1h',
+    })
+    } catch (err){
+        return next(new HttpError("Signing up failed, please try again", 500))
+    }
+
+    res.json({userId: existingUser.id, 
+        email: existingUser.email
+        ,token: token} )
 }
 
 exports.getUsers = getUsers
