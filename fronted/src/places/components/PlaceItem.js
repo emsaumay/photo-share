@@ -1,4 +1,4 @@
-import React, { useState } from "react"; 
+import React, { useContext, useState } from "react"; 
 import Button from "../../shared/Components/FormElements/Button";
 import Map from "../../shared/Components/UIElements/Map";
 import Modal from "../../shared/Components/UIElements/Modal";
@@ -9,8 +9,11 @@ import ErrorModal from "../../shared/Components/UIElements/ErrorModal";
 import { useHttpClient } from "../../shared/hooks/http-hook";
 
 import "./PlaceItem.css"
+import { AuthContext } from "../../shared/context/auth-context";
 
 const PlaceItem = props => {
+    const auth = useContext(AuthContext)
+
     const {isLoading,error, sendRequest, clearError} = useHttpClient();
 
     const [showMap, setShowMap] =useState(false);
@@ -24,7 +27,9 @@ const PlaceItem = props => {
 
     const deletePlaceHandler = async () => {
         try{
-            await sendRequest(`http://localhost:5000/api/places/${props.id}`, "DELETE")
+            await sendRequest(`http://localhost:5000/api/places/${props.id}`, "DELETE",{},{
+                Authorization: "Bearer " + auth.token
+            })
             // closedeleteMessageHandler()
             props.onDelete(props.id)
         }

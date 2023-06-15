@@ -68,7 +68,7 @@ const Auth = () => {
                 }
                 )
                 
-                Auth.login(responseData.userId)
+                Auth.login(responseData.userId, responseData.token)
             }
             catch(err){
                 console.log(err)
@@ -87,7 +87,7 @@ const Auth = () => {
                 // The Form Data automatically sets the right headers for the request and hence we dont need to specify them manually
                 formData
                 )
-                Auth.login(responseData.userId)
+                Auth.login(responseData.userId, responseData.token)
             }
             catch(err){
                 console.log(err)

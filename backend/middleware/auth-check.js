@@ -2,6 +2,10 @@ const jwt = require("jsonwebtoken")
 const HttpError = require("../models/httpError")
 
 module.exports = (req, res, next) => {
+    // Handling the browser default "OPTIONS" request
+    if (req.method == 'OPTIONS') {
+        return next();
+    }
     // try catch block in case headers doesn't een have an authorization field
     try{
         // Encoding the token in headers

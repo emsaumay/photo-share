@@ -14,23 +14,24 @@ import Auth from './user/pages/Auth';
 
 
 function App() {
-  const [isLoggedin, setIsLoggedin] = useState(false)
+  // Instead of check for isLoggedin we now check if the token exists
+  const [token, setToken] = useState(false)
   const [userId, setUserId] = useState(null)
    
-  const Login = useCallback((uid) => {
-    setIsLoggedin(true)
+  const Login = useCallback((uid, token) => {
+    setToken(token)
     setUserId(uid)
   }, [])
 
   
   const Logout = useCallback(() => {
-    setIsLoggedin(false)
+    setToken(null)
     setUserId(null)
   }, [])
 
   let routes;
 
-  if(isLoggedin){
+  if(token){
     routes= (
       <>
         <Route path="/" element={<Users/>} exact/>
@@ -54,7 +55,7 @@ function App() {
   }
 
   return (
-    <AuthContext.Provider value={{isLoggedin: isLoggedin, userId: userId, login: Login, logout: Logout}}>
+    <AuthContext.Provider value={{isLoggedin: !!token, token: token, userId: userId, login: Login, logout: Logout}}>
       <Router>
         <NavMain/>
         <Routes>

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 
 import Input from "../../shared/Components/FormElements/Input";
@@ -11,8 +11,10 @@ import { useHttpClient } from "../../shared/hooks/http-hook";
 import "./PlaceForm.css";
 import ErrorModal from "../../shared/Components/UIElements/ErrorModal";
 import LoadingSpinner from "../../shared/Components/UIElements/LoadingSpinner";
+import { AuthContext } from "../../shared/context/auth-context";
 
 const UpdatePlace = () => {
+  const auth = useContext(AuthContext)
   const { isLoading, sendRequest, error, clearError } = useHttpClient();
   const [place, setPlace] = useState(null);
 
@@ -77,7 +79,8 @@ const UpdatePlace = () => {
           name: formState.inputs.Location.value,
           caption: formState.inputs.Caption.value
         }),{
-          "Content-Type" : "application/json"
+          "Content-Type" : "application/json",
+          Authorization: "Bearer " + auth.token
         }
       )
       Navigate(`/${userId}/place`)
