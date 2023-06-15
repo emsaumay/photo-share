@@ -110,6 +110,11 @@ const updatePlace = async (req, res, next) => {
         return next(new HttpError("Could not find the place.", 404))
     }
 
+    // Check if the user sending the request is actually the one who made the place
+    if (place.creator.toString() !== req.userData.userId) {
+        return next(new HttpError("Invalid user! You are not allowed to update this place.", 401))
+    }
+
     place.name = name
     place.caption = caption
 
@@ -136,6 +141,10 @@ const deletePlace = async (req, res, next) => {
     }
     catch{
         return next(new HttpError("Something went wrong, could not delete the place.", 500))
+    }
+
+    if (place.creator.toString() !== req.userData.userId) {
+        return next(new HttpError("Invalid user! You are not allowed to update this place.", 401))
     }
 
     if(!place){
