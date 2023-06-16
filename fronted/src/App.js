@@ -1,4 +1,4 @@
-import React, {useCallback, useState} from 'react';
+import React, {useCallback, useState, useEffect} from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate} from 'react-router-dom';
 import Users from './user/pages/Users';
 import NewPlace from './places/pages/NewPlace';
@@ -21,8 +21,22 @@ function App() {
   const Login = useCallback((uid, token) => {
     setToken(token)
     setUserId(uid)
+    // To local storage we can only write text or data that can be converted to text
+    // Hence we use stringify
+    localStorage.setItem('UserData', JSON.stringify({userId: uid, token}))
   }, [])
 
+  // After storing the token in localStorage, we want to check if the
+  // token exists in there or not when the component mounts [renders first time]
+  useEffect(() => {
+    // useEffect runs after the render cycle, when the components fully loads
+    // We can add a state to confirm the useEffect has completed its work
+    // and meanwhile we can show some other page
+    const storedData = JSON.parse(localStorage.getItem("UserData"))
+    if (storedData && storedData.token) {
+      Login(storedData.userId, storedData.token)
+    }
+  }, [Login])
   
   const Logout = useCallback(() => {
     setToken(null)
