@@ -12,17 +12,20 @@ import UserPlace from './places/pages/UserPlace';
 import UpdatePlace from './places/pages/UpdatePlace';
 import Auth from './user/pages/Auth';
 
+let expirationTimer
 
 function App() {
   // Instead of check for isLoggedin we now check if the token exists
   const [token, setToken] = useState(false)
   const [userId, setUserId] = useState(null)
-   
+  const [tokenExpirationDate, setTokenExpirationDate] = useState() 
+
   const Login = useCallback((uid, token, expirationDate) => {
     // For token expiration, we maintain a token expiration date in our fronted
     // and check for the timer, the below expiration creates a new Date which is
     // 1 hr after the current time
     const tokenExpirationDate = expirationDate || new Date(new Date().getTime() + 1000 * 60 * 60)
+    setTokenExpirationDate(tokenExpirationDate)
     setToken(token)
     setUserId(uid)
     // To local storage we can only write text or data that can be converted to text
@@ -32,9 +35,20 @@ function App() {
   
   const Logout = useCallback(() => {
     setToken(null)
+    setTokenExpirationDate(null)
     setUserId(null)
     localStorage.removeItem('UserData')
   }, [])
+
+  useEffect(() => {
+    // Checking for Login case
+    if (token) {
+      const remainingTime = tokenExpirationDate.getTime() - new Date().getTime()
+      expirationTimer = setTimeout(Logout, remainingTime)
+    }else{
+      clearTimeout(expirationTimer)
+    }
+  }, [token, Logout, tokenExpirationDate])
 
   // After storing the token in localStorage, we want to check if the
   // token exists in there or not when the component mounts [renders first time]
