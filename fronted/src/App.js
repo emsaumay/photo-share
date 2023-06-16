@@ -18,12 +18,22 @@ function App() {
   const [token, setToken] = useState(false)
   const [userId, setUserId] = useState(null)
    
-  const Login = useCallback((uid, token) => {
+  const Login = useCallback((uid, token, expirationDate) => {
+    // For token expiration, we maintain a token expiration date in our fronted
+    // and check for the timer, the below expiration creates a new Date which is
+    // 1 hr after the current time
+    const tokenExpirationDate = expirationDate || new Date(new Date().getTime() + 1000 * 60 * 60)
     setToken(token)
     setUserId(uid)
     // To local storage we can only write text or data that can be converted to text
     // Hence we use stringify
-    localStorage.setItem('UserData', JSON.stringify({userId: uid, token}))
+    localStorage.setItem('UserData', JSON.stringify({userId: uid, token, expiration: tokenExpirationDate.toISOString()}))
+  }, [])
+  
+  const Logout = useCallback(() => {
+    setToken(null)
+    setUserId(null)
+    localStorage.removeItem('UserData')
   }, [])
 
   // After storing the token in localStorage, we want to check if the
@@ -33,15 +43,13 @@ function App() {
     // We can add a state to confirm the useEffect has completed its work
     // and meanwhile we can show some other page
     const storedData = JSON.parse(localStorage.getItem("UserData"))
-    if (storedData && storedData.token) {
-      Login(storedData.userId, storedData.token)
+    if (storedData && storedData.token && new Date(storedData.expiration) > new Date()) {
+      // We are also passing the expiraton date to our login function to check
+      // wether there is already a expiration Date, so that we dont always increase
+      // the expiration time by 1hr on each render cycle
+      Login(storedData.userId, storedData.token, new Date(storedData.expiration))
     }
   }, [Login])
-  
-  const Logout = useCallback(() => {
-    setToken(null)
-    setUserId(null)
-  }, [])
 
   let routes;
 
