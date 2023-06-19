@@ -4,7 +4,7 @@ import Map from "../../shared/Components/UIElements/Map";
 import Modal from "../../shared/Components/UIElements/Modal";
 import LoadingSpinner from "../../shared/Components/UIElements/LoadingSpinner";
 import ErrorModal from "../../shared/Components/UIElements/ErrorModal";
-
+import { BiUpvote, BiDownvote, BiUpArrow } from "react-icons/bi";
 
 import { useHttpClient } from "../../shared/hooks/http-hook";
 
@@ -18,12 +18,15 @@ const PlaceItem = props => {
 
     const [showMap, setShowMap] =useState(false);
     const [deleteMessage, setDeleteMessage] = useState(false)
+    const [isUpvote, setIsUpvote] = useState(false)
 
     const opendeleteMessageHandler = () => setDeleteMessage(true)
     const closedeleteMessageHandler = () => setDeleteMessage(false)
 
     const openMapHandler = () => setShowMap(true)
     const closeMapHandler = () => setShowMap(false)
+
+    const upvoteHandler = () => setIsUpvote(prevVote => !prevVote)
 
     const deletePlaceHandler = async () => {
         try{
@@ -68,20 +71,27 @@ const PlaceItem = props => {
             </p>
         </Modal>
         <li>
-            <div className="card">
-                <img src={props.image} alt={props.name}/>
-                <div className="card-content">
-                    <h2 className="card-title">{props.name}</h2>
-                    <p className="card-caption">{props.caption}</p>
-                    <hr className="card-line"/>
-                    <div className="card-buttons">
-                        <Button inverse onClick={openMapHandler}>View on Map</Button>
-                        {props.showEdit &&
-                        <>
-                        <Button to={`edit/${props.id}`}>Edit</Button>
-                        <Button inverse onClick={opendeleteMessageHandler}>Delete</Button>
-                        </>
-                        }
+            <div className="post-container">
+                <div className="post__options-tab">
+                    {isUpvote ? <BiUpvote  className="place__post-options" style={{background: "red"}} onClick={upvoteHandler}/> : <BiUpvote className="place__post-options" onClick={upvoteHandler}/>}
+                    <p className="place__post-options">{props.upvotes}</p>
+                    <BiDownvote className="place__post-options"/>
+                </div>
+                <div className="card">
+                    <img src={props.image} alt={props.name}/>
+                    <div className="card-content">
+                        <h2 className="card-title">{props.name}</h2>
+                        <p className="card-caption">{props.caption}</p>
+                        <hr className="card-line"/>
+                        <div className="card-buttons">
+                            <Button inverse onClick={openMapHandler}>View on Map</Button>
+                            {props.showEdit &&
+                            <>
+                            <Button to={`edit/${props.id}`}>Edit</Button>
+                            <Button inverse onClick={opendeleteMessageHandler}>Delete</Button>
+                            </>
+                            }
+                        </div>
                     </div>
                 </div>
             </div>

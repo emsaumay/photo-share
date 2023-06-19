@@ -17,6 +17,7 @@ const PlaceList = props => {
                     caption={place.caption}
                     showEdit = {props.showEdit}
                     onDelete={props.onDelete}
+                    upvotes={place.Upvotes}
                 />
             )})}
         </ul>

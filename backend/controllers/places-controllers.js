@@ -56,7 +56,8 @@ const createPlace = async (req,res,next) => {
         name,
         caption,
         image: req.file.path,
-        creator: req.userData.userId
+        creator: req.userData.userId,
+        Upvotes: 0
     })
 
     // UserData[0].places.push(NewPlace)
@@ -88,6 +89,43 @@ const createPlace = async (req,res,next) => {
     }
 
     res.status(201).json({place: NewPlace})
+}
+
+const upvotePlace = async(req, res, next) => {
+    const placeId = req.params.pid
+
+    let place
+    try{
+        place = await Place.findById(placeId).populate('creator')
+        console.log(place)
+    }
+    catch{
+        return next(new HttpError("Something went wrong, could not upvote this place.", 500))
+    }
+
+    // if (place.creator.toString() !== req.userData.userId) {
+    //     return next(new HttpError("Invalid user! You are not allowed to update this place.", 401))
+    // }
+
+    if(!place){
+        return next(new HttpError("Could not find place for this id.", 404))
+    }
+
+    try{
+        const session = await mongoose.startSession()
+        session.startTransaction();
+        place.Upvotes++;
+        await place.save()
+        place.creator.postsUpvoted.push(req.userData.userId)
+        await place.creator.save({session: session})
+        await session.commitTransaction()
+    }
+    catch(err){
+        console.log(err)
+        return next(new HttpError("Something went wrong, could not delete the place.", 500))
+    }
+
+    res.status(200).json({"message": "Removed"})
 }
 
 const updatePlace = async (req, res, next) => {
@@ -182,5 +220,6 @@ const deletePlace = async (req, res, next) => {
 exports.getUserPlacesbyId = getUserPlacesbyId
 exports.getPlacebyId = getPlacebyId
 exports.createPlace = createPlace
+exports.upvotePlace = upvotePlace
 exports.updatePlace = updatePlace
 exports.deletePlace = deletePlace
