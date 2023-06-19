@@ -12,7 +12,7 @@ function NavMain(props) {
             <nav>
                 <div className="logo">
                     <a href="/"><img src={Logo} alt="Logo" className="logo-img"/></a>
-                    <h1>NoName</h1>
+                    <h1>TravelGram</h1>
                 </div>
                 <NavLinks/>
             </nav>
