@@ -51,12 +51,12 @@ const createPlace = async (req,res,next) => {
         return next(new HttpError("Input not correct. Checkk again", 422))
     }
 
-    const {name, caption, creator} = req.body
+    const {name, caption} = req.body
     const NewPlace = new Place({
         name,
         caption,
         image: req.file.path,
-        creator
+        creator: req.userData.userId
     })
 
     // UserData[0].places.push(NewPlace)
