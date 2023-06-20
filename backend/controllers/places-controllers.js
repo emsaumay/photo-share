@@ -93,11 +93,10 @@ const createPlace = async (req,res,next) => {
 
 const upvotePlace = async(req, res, next) => {
     const placeId = req.params.pid
-
     let place
     try{
         place = await Place.findById(placeId).populate('creator')
-        console.log(place)
+        // console.log(place)
     }
     catch{
         return next(new HttpError("Something went wrong, could not upvote this place.", 500))
@@ -114,9 +113,43 @@ const upvotePlace = async(req, res, next) => {
     try{
         const session = await mongoose.startSession()
         session.startTransaction();
-        place.Upvotes++;
+        switch (req.body.actionType) {
+            case "ADD UPVOTE":
+                place.creator.postsUpvoted.push(placeId)
+                place.Upvotes++;
+                break;
+
+            case "REMOVE UPVOTE":
+                place.creator.postsUpvoted.pull(placeId)
+                place.Upvotes--;
+                break;
+
+            case "REMOVE DOWNVOTE ADD UPVOTE":
+                place.creator.postsUpvoted.push(placeId)
+                place.creator.postsDownvoted.pull(placeId)
+                place.Upvotes+=2;
+                break;
+
+            case "ADD DOWNVOTE REMOVE UPVOTE":
+                place.creator.postsDownvoted.push(placeId)
+                place.creator.postsUpvoted.pull(placeId)
+                place.Upvotes-=2;
+                break;
+                
+            case "REMOVE DOWNVOTE":
+                place.creator.postsDownvoted.pull(placeId)
+                place.Upvotes++;
+                break;
+
+            case "ADD DOWNVOTE":
+                place.creator.postsDownvoted.push(placeId)
+                place.Upvotes--;
+                break;
+
+            default:
+                break;
+        }
         await place.save()
-        place.creator.postsUpvoted.push(req.userData.userId)
         await place.creator.save({session: session})
         await session.commitTransaction()
     }

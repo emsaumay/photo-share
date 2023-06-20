@@ -31,6 +31,11 @@ const userSchema = new Schema({
     type: mongoose.Types.ObjectId,
     required: true,
     ref: "Place"
+  }],
+  postsDownvoted: [{
+    type: mongoose.Types.ObjectId,
+    required: true,
+    ref: "Place"
   }]
 });
 

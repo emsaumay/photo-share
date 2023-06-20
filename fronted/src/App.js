@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate} from 'react-router-dom';
 import Users from './user/pages/Users';
 import NewPlace from './places/pages/NewPlace';
@@ -14,7 +14,8 @@ import { useAuth } from './shared/hooks/auth-hook';
 
 function App() {
   const {token, Login, Logout, userId} = useAuth()
-
+  const [upvotes, setUpvotes] = useState([])
+  const [downvotes, setDownvotes] = useState([])
   let routes;
 
   if(token){
@@ -41,7 +42,7 @@ function App() {
   }
 
   return (
-    <AuthContext.Provider value={{isLoggedin: !!token, token: token, userId: userId, login: Login, logout: Logout}}>
+    <AuthContext.Provider value={{isLoggedin: !!token, token: token, userId: userId, login: Login, logout: Logout, upVotes: upvotes, downVotes: downvotes, setDownvotes: setDownvotes, setUpvotes: setUpvotes}}>
       <Router>
         <NavMain/>
         <Routes>

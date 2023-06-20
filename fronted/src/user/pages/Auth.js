@@ -67,7 +67,8 @@ const Auth = () => {
                     'Content-Type': 'application/json'
                 }
                 )
-                
+                Auth.setUpvotes(responseData.upvotes) 
+                Auth.setDownvotes(responseData.downvotes)
                 Auth.login(responseData.userId, responseData.token)
             }
             catch(err){
