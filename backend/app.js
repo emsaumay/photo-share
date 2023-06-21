@@ -50,3 +50,4 @@ mongoose
       console.log("Error in connecting to database")
         console.log(err)
     });
+module.exports = app;
