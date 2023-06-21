@@ -10,7 +10,7 @@ const Map = ({location, zoom}) => {
 
 
     useEffect(() => {
-        const APIkey = 'pk.eyJ1Ijoib25lcnVkZXpvbWJpZSIsImEiOiJja25vcGY1dXIwcWo5Mm9sYXp0NTk0czM0In0.PucshkWcR6UkRw7BlPBG0A';
+        const APIkey = process.env.REACT_APP_MAPBOX_API
         const API_URL = `https://api.mapbox.com/geocoding/v5/mapbox.places/${location}.json?access_token=${APIkey}&limit=1`
         const fetchData = async () => {
             const response = await fetch(`${API_URL}`);

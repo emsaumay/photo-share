@@ -15,7 +15,7 @@ module.exports = (req, res, next) => {
         }
 
         // Verifying Token
-        const decodedToken = jwt.verify(token, "donthekmepls")
+        const decodedToken = jwt.verify(token, process.env.JWT_SECRET)
         // In further requests attach a userId from the token
         req.userData = { userId: decodedToken.userId }
         // Since there were no errors until this point, this means that the user is allowed to access the futher requests

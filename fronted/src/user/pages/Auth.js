@@ -57,7 +57,7 @@ const Auth = () => {
 
         if (isLoginMode) {
             try{
-                const responseData = await sendRequest("http://localhost:5000/api/users/login", 
+                const responseData = await sendRequest(`${process.env.REACT_APP_BACKEND_URL}/users/login`, 
                 'POST',
                 JSON.stringify({
                     email: formState.inputs.Email.value,
@@ -83,7 +83,7 @@ const Auth = () => {
                 formData.append('name', formState.inputs.Name.value)
                 formData.append('password', formState.inputs.Password.value)
                 formData.append('image', formState.inputs.image.value)
-                const responseData = await sendRequest("http://localhost:5000/api/users/signup",'POST',
+                const responseData = await sendRequest(`${process.env.REACT_APP_BACKEND_URL}/users/signup`,'POST',
                 // The Form Data automatically sets the right headers for the request and hence we dont need to specify them manually
                 formData
                 )

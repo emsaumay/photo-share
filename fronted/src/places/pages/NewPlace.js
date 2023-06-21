@@ -39,7 +39,7 @@ function NewPlace(props){
             formData.append('caption', formState.inputs.Caption.value)
             formData.append('name', formState.inputs.Location.value)
             formData.append('image', formState.inputs.image.value)
-            await sendRequest("http://localhost:5000/api/places/", "POST", 
+            await sendRequest(`${process.env.REACT_APP_BACKEND_URL}/places/`, "POST", 
             formData,
             {
                 Authorization: 'Bearer ' + auth.token

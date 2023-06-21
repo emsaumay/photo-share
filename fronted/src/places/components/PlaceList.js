@@ -13,7 +13,7 @@ const PlaceList = props => {
                     key={place._id}
                     id={place._id}
                     name={place.name}
-                    image={`http://localhost:5000/${place.image}`}
+                    image={`${process.env.REACT_APP_ASSET_URL}/${place.image}`}
                     caption={place.caption}
                     showEdit = {props.showEdit}
                     onDelete={props.onDelete}
