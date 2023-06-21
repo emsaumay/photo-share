@@ -20,19 +20,29 @@ const UserPlaces = React.lazy(() => import("./places/pages/UserPlaces"))
 const UpdatePlace = React.lazy(() => import("./places/pages/UpdatePlace"))
 const Auth = React.lazy(() => import("./user/pages/Auth"))
 
+export const SuspenseElement = (props) => {
+  return(
+    <Suspense fallback={<div className="center"><LoadingSpinner/></div>}>
+      {props.comp}
+    </Suspense>
+  )
+}
+
 function App() {
   const {token, Login, Logout, userId} = useAuth()
 
   let routes;
 
+  
+
   if(token){
     routes= (
       <>
-        <Route path="/" element={<Users/>} exact/>
-        <Route path="/places/new" element={<NewPlace/>} exact/>
-        <Route path="/:userId/place/edit/:placeId" element={<UpdatePlace/>} exact/>
-        <Route path="/:userId/places" element={<UserPlaces/>} exact/>
-        <Route path="/:userId/place" element={<UserPlace/>} exact/>
+        <Route path="/" element={<SuspenseElement comp={<Users/>}/>} exact/>
+        <Route path="/places/new" element={<SuspenseElement comp={<NewPlace/>}/>} exact/>
+        <Route path="/:userId/place/edit/:placeId" element={<SuspenseElement comp={<UpdatePlace/>}/>} exact/>
+        <Route path="/:userId/places" element={<SuspenseElement comp={<UserPlaces/>}/>} exact/>
+        <Route path="/:userId/place" element={<SuspenseElement comp={<UserPlace/>}/>} exact/>
         <Route path='/*' element={<Navigate to="/"/>}/>
       </>
     );
@@ -40,9 +50,9 @@ function App() {
   else{
     routes = (
       <>
-        <Route path="/" element={<Users/>} exact/>
-        <Route path="/:userId/places" element={<UserPlaces/>} exact/>
-        <Route path="/auth" element={<Auth/>} exact/>
+        <Route path="/" element={<SuspenseElement comp={<Users/>}/>} exact/>
+        <Route path="/:userId/places" element={<SuspenseElement comp={<UserPlaces/>}/>} exact/>
+        <Route path="/auth" element={<SuspenseElement comp={<Auth/>}/>} exact/>
         <Route path='/*' element={<Navigate to="/auth"/>}/>
       </>
     )
@@ -53,10 +63,7 @@ function App() {
       <Router>
         <NavMain/>
         <Routes>
-          <Suspense fallback={<div classname="center"><LoadingSpinner/></div>}>
             {routes}
-          </Suspense>
-          
         </Routes>
         <Clock/>
       </Router>
