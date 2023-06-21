@@ -23,7 +23,7 @@ const UserPlaces = props => {
             }
         }
         getPlaces();
-    }, [])
+    }, [sendRequest, userId])
 
     const deleteHandle = (placeId) => {
         setLoadedPlaces(
